@@ -1,3 +1,11 @@
-<h1>
-  {{title}}
-</h1>
+<div *ngIf="auth.isAuthenticated">
+  <nav>
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/profile" routerLinkActive="active">Profile</a>
+    <button *ngIf="auth.token" (click)="logout()">Logout</button>
+  </nav>
+</div>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
