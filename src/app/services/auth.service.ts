@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, NgZone } from '@angular/core';
 import * as firebase from 'firebase';
 import { CanActivate, Router } from '@angular/router';
 
@@ -8,7 +8,7 @@ var provider = new firebase
 
 @Injectable()
 export class AuthService implements CanActivate {
-    constructor(private router: Router) { }
+    constructor(private router: Router, private ngZone: NgZone) { }
 
     public token: string;
     public user: object;
@@ -29,11 +29,13 @@ export class AuthService implements CanActivate {
             .auth()
             .signInWithPopup(provider)
             .then((result) => {
-                this._setSession(result);
-                this.token = result.credential.accessToken;
-                this.user = result.user;
-                this.isAuthenticated = true;
-                this.router.navigate(['/dashboard']);
+                this.ngZone.run(() => {
+                    this._setSession(result);
+                    this.token = result.credential.accessToken;
+                    this.user = result.user;
+                    this.isAuthenticated = true;
+                    this.router.navigate(['/dashboard']);
+                });
             })
             .catch((error) => {
                 this.router.navigate(['']);
