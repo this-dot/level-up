@@ -1,8 +1,8 @@
-<div *ngIf="auth.isAuthenticated">
+<div *ngIf="(auth.isAuthenticated() | async)">
   <nav>
     <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     <a routerLink="/profile" routerLinkActive="active">Profile</a>
-    <button *ngIf="auth.token" (click)="logout()">Logout</button>
+    <button *ngIf="(auth.isAuthenticated() | async)" (click)="auth.close()">Logout</button>
   </nav>
 </div>
 

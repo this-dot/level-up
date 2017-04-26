@@ -1,4 +1,4 @@
 <p>Please login</p>
 <div>
-  <button *ngIf="!auth.token" (click)="login()">Github Login</button>
+  <button *ngIf="!(auth.isAuthenticated() | async)" (click)="auth.open()">Github Login</button>
 </div>
