@@ -1,18 +1,21 @@
-import { Injectable, OnInit, NgZone } from '@angular/core';
+import {Injectable, OnInit, NgZone} from '@angular/core';
 import * as firebase from 'firebase';
-import { CanActivate, Router } from '@angular/router';
+import {CanActivate, Router} from '@angular/router';
+
+import {AuthInterface} from './auth';
 
 var provider = new firebase
     .auth
     .GithubAuthProvider();
 
 @Injectable()
-export class AuthService implements CanActivate {
-    constructor(private router: Router, private ngZone: NgZone) { }
+export class AuthService implements CanActivate,
+AuthInterface {
+    constructor(private router : Router, private ngZone : NgZone) {}
 
-    public token: string;
-    public user: object;
-    public isAuthenticated: boolean;
+    public token : string;
+    public user : object;
+    public isAuthenticated : boolean;
 
     canActivate() {
         if (this.isAuthenticated) {
@@ -29,16 +32,22 @@ export class AuthService implements CanActivate {
             .auth()
             .signInWithPopup(provider)
             .then((result) => {
-                this.ngZone.run(() => {
-                    this._setSession(result);
-                    this.token = result.credential.accessToken;
-                    this.user = result.user;
-                    this.isAuthenticated = true;
-                    this.router.navigate(['/dashboard']);
-                });
+                this
+                    .ngZone
+                    .run(() => {
+                        this._setSession(result);
+                        this.token = result.credential.accessToken;
+                        this.user = result.user;
+                        this.isAuthenticated = true;
+                        this
+                            .router
+                            .navigate(['/dashboard']);
+                    });
             })
             .catch((error) => {
-                this.router.navigate(['']);
+                this
+                    .router
+                    .navigate(['']);
             });
     }
 
@@ -55,10 +64,14 @@ export class AuthService implements CanActivate {
                 this.token = '';
                 this.user = {};
                 this.isAuthenticated = false;
-                this.router.navigate(['']);
+                this
+                    .router
+                    .navigate(['']);
             })
             .catch((error) => {
-                this.router.navigate(['']);
+                this
+                    .router
+                    .navigate(['']);
             });
     }
 
@@ -71,8 +84,12 @@ export class AuthService implements CanActivate {
         let token = localStorage.getItem('user_token');
         let user = localStorage.getItem('user');
 
-        this.token = token ? token : null;
-        this.user = user ? JSON.parse(user) : {};
+        this.token = token
+            ? token
+            : null;
+        this.user = user
+            ? JSON.parse(user)
+            : {};
         this.isAuthenticated = !!token;
     }
 
